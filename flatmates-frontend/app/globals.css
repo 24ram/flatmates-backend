@@ -1,30 +1,92 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #F7F7F5;
+  --surface: #FFFFFF;
+  --surface2: #F0F0EE;
+  --border: rgba(0, 0, 0, 0.08);
+  --accent: #7C3AED;
+  --accent2: #EC4899;
+  --accent-glow: rgba(124, 58, 237, 0.2);
+  --text: #111111;
+  --muted: #888888;
+  --success: #10B981;
+  --danger: #EF4444;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #ddd; border-radius: 99px; }
+
+/* No scrollbar utility */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* White card */
+.glass {
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
 }
-body {
-  background: radial-gradient(circle at top, #0f172a, #020617);
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #7C3AED, #EC4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Gradient button */
+.btn-gradient {
+  background: linear-gradient(135deg, #7C3AED, #EC4899);
   color: white;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
 }
+.btn-gradient:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-gradient:active { transform: scale(0.97); }
+
+/* Input field */
+.input-field {
+  background: #F7F7F5;
+  border: 1.5px solid #E5E5E5;
+  color: #111;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.input-field:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.input-field::placeholder { color: #AAAAAA; }
+
+/* Tag badge */
+.tag {
+  background: rgba(124, 58, 237, 0.08);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  color: #7C3AED;
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 99px;
+}
+
+/* Glow */
+.glow { box-shadow: 0 0 24px var(--accent-glow); }

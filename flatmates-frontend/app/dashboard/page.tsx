@@ -31,7 +31,7 @@ export default function Dashboard() {
   
   // Photo Onboarding
   const [showPhotoUpload, setShowPhotoUpload] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<{ profile: File | null; house1: File | null; house2: File | null }>({ profile: null, house1: null, house2: null });
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
   const currentUser =
@@ -42,7 +42,7 @@ export default function Dashboard() {
   useEffect(() => {
     (async () => {
       try {
-        if (currentUser && !currentUser.avatar) {
+        if (currentUser && (!currentUser.user_images || currentUser.user_images.length < 3)) {
           setShowPhotoUpload(true);
         }
 
@@ -92,11 +92,16 @@ export default function Dashboard() {
   const currentScore = person ? scores[person.id] : undefined;
   const personListings = person ? (userListings[person.id] || []) : [];
 
-  // Collect room photos from their listings or fallback
-  const roomPhotos: string[] = personListings.flatMap((l: any) => l.images || []).slice(0, 4);
-  if (roomPhotos.length === 0 && person) {
-    const fallback = ROOM_PHOTOS[index % 5] || ROOM_PHOTOS[0];
-    roomPhotos.push(...fallback);
+  // Collect room photos from their listings or user_images
+  let roomPhotos: string[] = [];
+  if (person?.user_images && person.user_images.length > 0) {
+    roomPhotos = person.user_images.filter((img: any) => img.type === "house").map((img: any) => img.url);
+  } else {
+    roomPhotos = personListings.flatMap((l: any) => l.images || []).slice(0, 4);
+    if (roomPhotos.length === 0 && person) {
+      const fallback = ROOM_PHOTOS[index % 5] || ROOM_PHOTOS[0];
+      roomPhotos.push(...fallback);
+    }
   }
 
   if (loading) {
@@ -350,51 +355,56 @@ export default function Dashboard() {
       <AnimatePresence>
         {showPhotoUpload && (
           <motion.div initial={{ opacity: 0, y: "100%" }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: "100%" }}
-            className="fixed inset-0 z-[100] flex flex-col bg-white"
+            className="fixed inset-0 z-[100] flex flex-col bg-white overflow-y-auto"
             style={{ maxWidth: "430px", left: "50%", transform: "translateX(-50%)" }}>
             
-            <div className="flex-1 flex flex-col p-6 pt-16">
-              <h2 className="text-3xl font-extrabold text-gray-900 mb-2">Add a photo</h2>
-              <p className="text-gray-500 mb-10 text-lg">Profiles with photos get 3x more matches.</p>
+            <div className="flex-1 flex flex-col p-6 pt-12 pb-12">
+              <h2 className="text-3xl font-extrabold text-gray-900 mb-2">Build your profile</h2>
+              <p className="text-gray-500 mb-6 text-sm">Upload 1 Profile Photo and 2 House Photos to continue.</p>
 
-              <div className="flex-1 flex flex-col items-center justify-center">
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  id="avatarUpload" 
-                  className="hidden" 
-                  onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (f) setSelectedFile(f);
-                  }} 
-                />
-                <label htmlFor="avatarUpload" 
-                  className="w-56 h-56 rounded-full border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all"
-                  style={{ 
-                    borderColor: selectedFile ? "#111" : "#D1D5DB",
-                    background: selectedFile ? "#fff" : "#F9FAFB",
-                    boxShadow: selectedFile ? "0 8px 32px rgba(0,0,0,0.1)" : "none",
-                    overflow: "hidden"
-                  }}>
-                  {selectedFile ? (
-                    <img src={URL.createObjectURL(selectedFile)} alt="preview" className="w-full h-full object-cover" />
-                  ) : (
-                    <>
-                      <div className="text-4xl mb-3">📸</div>
-                      <span className="text-[15px] font-bold text-gray-400">Tap to upload</span>
-                    </>
-                  )}
-                </label>
+              <div className="flex flex-col gap-4">
+                {/* Profile Photo */}
+                <div className="w-full">
+                  <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Profile Photo (Required)</p>
+                  <label className="block w-full aspect-square max-h-[220px] rounded-2xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all relative overflow-hidden"
+                    style={{ borderColor: files.profile ? "#111" : "#D1D5DB", background: files.profile ? "#fff" : "#F9FAFB" }}>
+                    <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) setFiles(p => ({...p, profile: f})); }} />
+                    {files.profile ? <img src={URL.createObjectURL(files.profile)} alt="profile preview" className="w-full h-full object-cover" /> : <div className="text-gray-400 flex flex-col items-center"><span className="text-3xl mb-1">👤</span><span className="text-sm font-semibold">Tap to upload</span></div>}
+                  </label>
+                </div>
+
+                <div className="w-full flex gap-3">
+                  {/* House 1 */}
+                  <div className="flex-1">
+                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">House Photo 1</p>
+                    <label className="block w-full aspect-square rounded-2xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all relative overflow-hidden"
+                      style={{ borderColor: files.house1 ? "#111" : "#D1D5DB", background: files.house1 ? "#fff" : "#F9FAFB" }}>
+                      <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) setFiles(p => ({...p, house1: f})); }} />
+                      {files.house1 ? <img src={URL.createObjectURL(files.house1)} alt="preview" className="w-full h-full object-cover" /> : <div className="text-gray-400 flex flex-col items-center"><span className="text-2xl mb-1">🏠</span></div>}
+                    </label>
+                  </div>
+                  {/* House 2 */}
+                  <div className="flex-1">
+                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">House Photo 2</p>
+                    <label className="block w-full aspect-square rounded-2xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all relative overflow-hidden"
+                      style={{ borderColor: files.house2 ? "#111" : "#D1D5DB", background: files.house2 ? "#fff" : "#F9FAFB" }}>
+                      <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) setFiles(p => ({...p, house2: f})); }} />
+                      {files.house2 ? <img src={URL.createObjectURL(files.house2)} alt="preview" className="w-full h-full object-cover" /> : <div className="text-gray-400 flex flex-col items-center"><span className="text-2xl mb-1">🏠</span></div>}
+                    </label>
+                  </div>
+                </div>
               </div>
 
-              <div className="mt-auto pt-6 flex flex-col gap-3">
+              <div className="mt-8 flex flex-col gap-3">
                 <button 
                   onClick={async () => {
-                    if (!selectedFile) return;
+                    if (!files.profile || !files.house1 || !files.house2) return;
                     setUploadingPhoto(true);
                     try {
                       const formData = new FormData();
-                      formData.append("images", selectedFile);
+                      formData.append("images", files.profile);
+                      formData.append("images", files.house1);
+                      formData.append("images", files.house2);
                       const backendUrl = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace('/api', '') : 'http://localhost:5000';
                       
                       const uploadRes = await fetch(`${backendUrl}/api/upload`, {
@@ -404,15 +414,21 @@ export default function Dashboard() {
                       });
                       
                       const uploadData = await uploadRes.json();
-                      if (uploadData.urls && uploadData.urls[0]) {
+                      if (uploadData.urls && uploadData.urls.length >= 3) {
                         const avatarUrl = uploadData.urls[0];
+                        const user_images = [
+                          { url: uploadData.urls[0], type: "profile" },
+                          { url: uploadData.urls[1], type: "house" },
+                          { url: uploadData.urls[2], type: "house" }
+                        ];
+                        
                         await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/users/profile`, {
                             method: "PUT",
                             headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
-                            body: JSON.stringify({ avatar: avatarUrl })
+                            body: JSON.stringify({ avatar: avatarUrl, user_images })
                         });
                         
-                        const updatedUser = { ...currentUser, avatar: avatarUrl };
+                        const updatedUser = { ...currentUser, avatar: avatarUrl, user_images };
                         localStorage.setItem("user", JSON.stringify(updatedUser));
                         setShowPhotoUpload(false);
                       }
@@ -422,17 +438,11 @@ export default function Dashboard() {
                       setUploadingPhoto(false);
                     }
                   }}
-                  disabled={!selectedFile || uploadingPhoto}
+                  disabled={!files.profile || !files.house1 || !files.house2 || uploadingPhoto}
                   className="btn-gradient w-full py-4 rounded-2xl font-bold text-white text-lg transition-transform"
-                  style={{ opacity: !selectedFile ? 0.6 : 1 }}
+                  style={{ opacity: (!files.profile || !files.house1 || !files.house2) ? 0.6 : 1 }}
                 >
-                  {uploadingPhoto ? "Uploading..." : "Looks Good"}
-                </button>
-                <button 
-                  onClick={() => setShowPhotoUpload(false)}
-                  className="w-full py-3 text-center text-[15px] font-bold text-gray-400"
-                >
-                  I'll do it later
+                  {uploadingPhoto ? "Uploading..." : "Save Profile"}
                 </button>
               </div>
             </div>

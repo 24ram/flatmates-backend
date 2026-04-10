@@ -11,7 +11,7 @@ router.get("/", authMiddleware, async (req, res) => {
 
     const result = await pool.query(
       `SELECT id, name, email, gender, budget, city, lifestyle, smoking, pets,
-              bio, avatar, age, location,
+              bio, avatar, age, location, user_images,
               sleep_time, cleanliness, social_level, occupation
        FROM users
        WHERE id != $1
@@ -59,15 +59,16 @@ router.get("/score/:targetId", authMiddleware, async (req, res) => {
 // PUT /api/users/profile — Update user profile (like avatar)
 router.put("/profile", authMiddleware, async (req, res) => {
   try {
-    const { avatar, bio } = req.body;
+    const { avatar, bio, user_images } = req.body;
     const currentUserId = req.user.id;
 
     const result = await pool.query(
       `UPDATE users 
        SET avatar = COALESCE($1, avatar),
-           bio = COALESCE($2, bio)
-       WHERE id = $3 RETURNING *`,
-      [avatar, bio, currentUserId]
+           bio = COALESCE($2, bio),
+           user_images = COALESCE($3, user_images)
+       WHERE id = $4 RETURNING *`,
+      [avatar, bio, user_images ? JSON.stringify(user_images) : null, currentUserId]
     );
 
     res.json(result.rows[0]);

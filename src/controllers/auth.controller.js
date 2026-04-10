@@ -51,6 +51,8 @@ const signup = async (req, res) => {
         id: user.id,
         name: user.name,
         email: user.email,
+        avatar: user.avatar,
+        user_images: user.user_images,
       },
     });
 
@@ -90,6 +92,8 @@ const login = async (req, res) => {
         id: user.id,
         name: user.name,
         email: user.email,
+        avatar: user.avatar,
+        user_images: user.user_images,
       },
     });
 

@@ -414,6 +414,9 @@ export default function Dashboard() {
                       });
                       
                       const uploadData = await uploadRes.json();
+                      if (!uploadRes.ok) {
+                        throw new Error(uploadData.error || "Upload failed from server");
+                      }
                       if (uploadData.urls && uploadData.urls.length >= 3) {
                         const avatarUrl = uploadData.urls[0];
                         const user_images = [
@@ -432,8 +435,8 @@ export default function Dashboard() {
                         localStorage.setItem("user", JSON.stringify(updatedUser));
                         setShowPhotoUpload(false);
                       }
-                    } catch (e) {
-                      alert("Upload failed. Try again.");
+                    } catch (e: any) {
+                      alert(`Upload failed: ${e.message}`);
                     } finally {
                       setUploadingPhoto(false);
                     }

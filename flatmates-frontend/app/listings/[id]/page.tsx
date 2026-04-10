@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { getListingById } from "@/lib/api";
 import BottomNav from "../../components/BottomNav";
 import { motion } from "framer-motion";
-import { ArrowLeft, MapPin, Wifi, Wind, Car, Dumbbell, UtensilsCrossed, Shield, WashingMachine, Waves, Star } from "lucide-react";
+import { ArrowLeft, MapPin, Wifi, Wind, Car, Dumbbell, UtensilsCrossed, Shield, WashingMachine, Waves, Star, MessageCircle } from "lucide-react";
 
 const BACKEND_URL = "http://localhost:5000";
 
@@ -120,6 +120,13 @@ export default function ListingDetailPage() {
             {activeImg + 1}/{images.length}
           </div>
         )}
+
+        {/* Message / Chat button */}
+        <button onClick={() => router.push(`/chat/${listing.owner_id}`)}
+          className="absolute bottom-4 right-4 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105 z-10"
+          style={{ background: "linear-gradient(135deg,#7C3AED,#EC4899)", border: "2px solid rgba(255,255,255,0.2)" }}>
+          <MessageCircle size={22} color="#fff" />
+        </button>
       </div>
 
       {/* ── Thumbnail strip ── */}

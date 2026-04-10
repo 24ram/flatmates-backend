@@ -33,7 +33,7 @@ export default function MatchesPage() {
     <div className="min-h-screen pb-28 pt-8 px-4" style={{ background: "var(--bg)" }}>
       {/* Header */}
       <div className="max-w-sm mx-auto mb-6">
-        <h1 className="text-xl font-bold text-white">Your Matches</h1>
+        <h1 className="text-xl font-bold text-gray-900">Your Matches</h1>
         <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>
           {matches.length > 0 ? `${matches.length} match${matches.length !== 1 ? "es" : ""}` : "No matches yet"}
         </p>
@@ -50,7 +50,7 @@ export default function MatchesPage() {
           className="max-w-sm mx-auto glass rounded-3xl p-10 text-center mt-8"
         >
           <div className="text-5xl mb-4">💜</div>
-          <h2 className="text-lg font-bold text-white mb-2">No matches yet</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-2">No matches yet</h2>
           <p className="text-sm mb-5" style={{ color: "var(--muted)" }}>Keep swiping — your perfect flatmate is out there!</p>
           <button onClick={() => router.push("/dashboard")} className="btn-gradient px-6 py-2.5 rounded-xl text-sm font-semibold">
             Start Swiping
@@ -81,7 +81,7 @@ export default function MatchesPage() {
               </div>
 
               <div className="text-center">
-                <p className="text-sm font-semibold text-white leading-tight">{user.name}</p>
+                <p className="text-sm font-semibold text-gray-900 leading-tight">{user.name}</p>
                 <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>
                   {user.city || "Unknown"}
                 </p>

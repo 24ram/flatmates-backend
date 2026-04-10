@@ -1,7 +1,6 @@
+require("dotenv").config();
 const pool = require("./src/config/db");
 const bcrypt = require("bcryptjs");
-
-require("dotenv").config();
 
 const testUsers = [
   {

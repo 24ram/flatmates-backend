@@ -1,5 +1,5 @@
-const pool = require("./src/config/db");
 require("dotenv").config();
+const pool = require("./src/config/db");
 
 async function migrate() {
   console.log("🚀 Running migration v2...\n");

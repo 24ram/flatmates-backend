@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { MapPin, Wifi, Wind, Car, Dumbbell } from "lucide-react";
+import { MapPin, Wifi, Wind, Car, Dumbbell, MessageCircle } from "lucide-react";
 
 const amenityIcons: Record<string, any> = {
   wifi: Wifi, ac: Wind, parking: Car, gym: Dumbbell,
@@ -65,6 +65,15 @@ export default function ListingCard({ listing, index = 0 }: { listing: any; inde
               style={{ background: "rgba(255,255,255,0.92)", color: "#555" }}>🐾</span>
           )}
         </div>
+
+        {/* Message overlay bottom-right */}
+        <button 
+          onClick={(e) => { e.stopPropagation(); router.push(`/chat/${listing.owner_id}`); }}
+          className="absolute bottom-3 right-3 w-8 h-8 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110 z-10"
+          style={{ background: "linear-gradient(135deg,#7C3AED,#EC4899)", color: "#fff" }}
+        >
+          <MessageCircle size={15} />
+        </button>
       </div>
 
       {/* Info below image — Airbnb style */}

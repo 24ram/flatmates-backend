@@ -8,7 +8,7 @@ const amenityIcons: Record<string, any> = {
   wifi: Wifi, ac: Wind, parking: Car, gym: Dumbbell,
 };
 
-const BACKEND_URL = "http://localhost:5000";
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace('/api', '') : "http://localhost:5000";
 
 export default function ListingCard({ listing, index = 0 }: { listing: any; index?: number }) {
   const router = useRouter();

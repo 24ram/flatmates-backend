@@ -16,7 +16,7 @@ export default function MatchesPage() {
         const token = localStorage.getItem("token");
         if (!token) { window.location.href = "/login"; return; }
 
-        const res = await fetch("http://localhost:5000/api/matches", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/matches`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

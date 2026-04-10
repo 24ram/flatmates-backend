@@ -235,7 +235,7 @@ export default function Home() {
                   {roomPhotos.map((url: string, i: number) => (
                     <div key={i} style={{ borderRadius: 20, overflow: "hidden", height: 260 }}>
                       <img
-                        src={url.startsWith("http") ? url : `http://localhost:5000${url}`}
+                        src={url.startsWith("http") ? url : `${process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace('/api', '') : 'http://localhost:5000'}${url}`}
                         alt={`Room ${i + 1}`}
                         style={{ width: "100%", height: "100%", objectFit: "cover" }}
                       />

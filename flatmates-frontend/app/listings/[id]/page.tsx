@@ -7,7 +7,7 @@ import BottomNav from "../../components/BottomNav";
 import { motion } from "framer-motion";
 import { ArrowLeft, MapPin, Wifi, Wind, Car, Dumbbell, UtensilsCrossed, Shield, WashingMachine, Waves, Star, MessageCircle } from "lucide-react";
 
-const BACKEND_URL = "http://localhost:5000";
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace('/api', '') : "http://localhost:5000";
 
 const amenityIcons: Record<string, any> = {
   wifi: Wifi, ac: Wind, parking: Car, gym: Dumbbell,

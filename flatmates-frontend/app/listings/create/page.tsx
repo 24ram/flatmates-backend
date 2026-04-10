@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import BottomNav from "../../components/BottomNav";
 import { X, Upload, Check } from "lucide-react";
 
-const BACKEND_URL = "http://localhost:5000";
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace('/api', '') : "http://localhost:5000";
 const AMENITY_OPTIONS = ["WiFi", "AC", "Furnished", "Parking", "Gym", "Laundry", "Pool", "Kitchen", "Balcony", "Security"];
 
 export default function CreateListingPage() {

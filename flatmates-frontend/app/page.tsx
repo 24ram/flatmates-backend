@@ -1,16 +1,5 @@
-"use client";
-
-import { useEffect } from "react";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      window.location.href = "/dashboard";
-    } else {
-      window.location.href = "/login";
-    }
-  }, []);
-
-  return null;
+  redirect("/login");
 }

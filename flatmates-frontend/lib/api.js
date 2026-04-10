@@ -36,6 +36,11 @@ export const apiFetch = async (endpoint, options = {}) => {
 
 // USERS
 export const getUsers = () => apiFetch("/users");
+export const updateProfile = (data) =>
+  apiFetch("/users/profile", {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
 
 // COMPATIBILITY SCORE
 export const getScore = (targetId) => apiFetch(`/users/score/${targetId}`);

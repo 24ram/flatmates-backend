@@ -28,6 +28,11 @@ export default function Dashboard() {
   const [matchedUser, setMatchedUser] = useState<any>(null);
   const [showMenu, setShowMenu] = useState(false);
   const [userListings, setUserListings] = useState<Record<number, any[]>>({});
+  
+  // Photo Onboarding
+  const [showPhotoUpload, setShowPhotoUpload] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
   const currentUser =
     typeof window !== "undefined"
@@ -37,6 +42,10 @@ export default function Dashboard() {
   useEffect(() => {
     (async () => {
       try {
+        if (currentUser && !currentUser.avatar) {
+          setShowPhotoUpload(true);
+        }
+
         const data = await getUsers();
         if (!data || !Array.isArray(data)) return;
         const filtered = data.filter((u: any) => u.id !== currentUser?.id);
@@ -334,6 +343,99 @@ export default function Dashboard() {
                 Keep Swiping
               </button>
             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showPhotoUpload && (
+          <motion.div initial={{ opacity: 0, y: "100%" }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: "100%" }}
+            className="fixed inset-0 z-[100] flex flex-col bg-white"
+            style={{ maxWidth: "430px", left: "50%", transform: "translateX(-50%)" }}>
+            
+            <div className="flex-1 flex flex-col p-6 pt-16">
+              <h2 className="text-3xl font-extrabold text-gray-900 mb-2">Add a photo</h2>
+              <p className="text-gray-500 mb-10 text-lg">Profiles with photos get 3x more matches.</p>
+
+              <div className="flex-1 flex flex-col items-center justify-center">
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  id="avatarUpload" 
+                  className="hidden" 
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) setSelectedFile(f);
+                  }} 
+                />
+                <label htmlFor="avatarUpload" 
+                  className="w-56 h-56 rounded-full border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all"
+                  style={{ 
+                    borderColor: selectedFile ? "#111" : "#D1D5DB",
+                    background: selectedFile ? "#fff" : "#F9FAFB",
+                    boxShadow: selectedFile ? "0 8px 32px rgba(0,0,0,0.1)" : "none",
+                    overflow: "hidden"
+                  }}>
+                  {selectedFile ? (
+                    <img src={URL.createObjectURL(selectedFile)} alt="preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <>
+                      <div className="text-4xl mb-3">📸</div>
+                      <span className="text-[15px] font-bold text-gray-400">Tap to upload</span>
+                    </>
+                  )}
+                </label>
+              </div>
+
+              <div className="mt-auto pt-6 flex flex-col gap-3">
+                <button 
+                  onClick={async () => {
+                    if (!selectedFile) return;
+                    setUploadingPhoto(true);
+                    try {
+                      const formData = new FormData();
+                      formData.append("images", selectedFile);
+                      const backendUrl = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace('/api', '') : 'http://localhost:5000';
+                      
+                      const uploadRes = await fetch(`${backendUrl}/api/upload`, {
+                        method: "POST",
+                        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+                        body: formData
+                      });
+                      
+                      const uploadData = await uploadRes.json();
+                      if (uploadData.urls && uploadData.urls[0]) {
+                        const avatarUrl = uploadData.urls[0];
+                        await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/users/profile`, {
+                            method: "PUT",
+                            headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
+                            body: JSON.stringify({ avatar: avatarUrl })
+                        });
+                        
+                        const updatedUser = { ...currentUser, avatar: avatarUrl };
+                        localStorage.setItem("user", JSON.stringify(updatedUser));
+                        setShowPhotoUpload(false);
+                      }
+                    } catch (e) {
+                      alert("Upload failed. Try again.");
+                    } finally {
+                      setUploadingPhoto(false);
+                    }
+                  }}
+                  disabled={!selectedFile || uploadingPhoto}
+                  className="btn-gradient w-full py-4 rounded-2xl font-bold text-white text-lg transition-transform"
+                  style={{ opacity: !selectedFile ? 0.6 : 1 }}
+                >
+                  {uploadingPhoto ? "Uploading..." : "Looks Good"}
+                </button>
+                <button 
+                  onClick={() => setShowPhotoUpload(false)}
+                  className="w-full py-3 text-center text-[15px] font-bold text-gray-400"
+                >
+                  I'll do it later
+                </button>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

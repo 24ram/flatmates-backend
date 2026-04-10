@@ -56,5 +56,25 @@ router.get("/score/:targetId", authMiddleware, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+// PUT /api/users/profile — Update user profile (like avatar)
+router.put("/profile", authMiddleware, async (req, res) => {
+  try {
+    const { avatar, bio } = req.body;
+    const currentUserId = req.user.id;
+
+    const result = await pool.query(
+      `UPDATE users 
+       SET avatar = COALESCE($1, avatar),
+           bio = COALESCE($2, bio)
+       WHERE id = $3 RETURNING *`,
+      [avatar, bio, currentUserId]
+    );
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("UPDATE PROFILE ERROR:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 module.exports = router;

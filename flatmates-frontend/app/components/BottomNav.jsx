@@ -2,13 +2,14 @@
 
 import { useRouter, usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { Search, Home, Heart, MessageCircle } from "lucide-react";
+import { Search, Home, Heart, MessageCircle, User } from "lucide-react";
 
 const navItems = [
   { label: "Discover", route: "/dashboard",  Icon: Search },
   { label: "Listings",  route: "/listings",   Icon: Home },
   { label: "Matches",   route: "/matches",    Icon: Heart },
-  { label: "Chat",      route: "/matches",    Icon: MessageCircle },
+  { label: "Chat",      route: "/matches",    Icon: MessageCircle }, // Chat could be a separate route, mapped to matches for now
+  { label: "Profile",   route: "/profile",    Icon: User },
 ];
 
 export default function BottomNav() {

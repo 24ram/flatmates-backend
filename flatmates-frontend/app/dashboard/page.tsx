@@ -26,7 +26,6 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [scores, setScores] = useState<Record<number, { score: number; explanation: string }>>({});
   const [matchedUser, setMatchedUser] = useState<any>(null);
-  const [showMenu, setShowMenu] = useState(false);
   const [userListings, setUserListings] = useState<Record<number, any[]>>({});
   
   // Photo Onboarding
@@ -117,56 +116,7 @@ export default function Dashboard() {
     <div className="min-h-screen" style={{ background: "#F2F2EF", paddingBottom: "90px" }}>
 
       {/* ── Content ── */}
-      {/* ── Sticky Header ── */}
-      <div className="sticky top-0 z-20 bg-white border-b border-gray-100 flex items-center justify-between px-4 py-3">
-        <h1 style={{ fontSize: 18, fontWeight: 800, color: "#111", letterSpacing: "-0.3px" }}>Discover</h1>
-        <div style={{ position: "relative" }}>
-          <button
-            onClick={() => setShowMenu(m => !m)}
-            style={{
-              width: 34, height: 34, borderRadius: "50%",
-              background: "#fff",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontWeight: 800, fontSize: 15, color: "#000",
-              cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-              border: "1px solid #E5E5E5"
-            }}
-          >
-            {currentUser?.name?.[0]?.toUpperCase() || "?"}
-          </button>
-          <AnimatePresence>
-            {showMenu && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.92, y: -4 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.92 }}
-                style={{
-                  position: "absolute", top: 40, right: 0,
-                  width: 176, background: "#fff", borderRadius: 16,
-                  boxShadow: "0 8px 32px rgba(0,0,0,0.15)",
-                  border: "1px solid rgba(0,0,0,0.07)",
-                  overflow: "hidden", zIndex: 50,
-                }}
-              >
-                <div style={{ padding: "14px 16px", borderBottom: "1px solid #F0F0F0" }}>
-                  <p style={{ fontSize: 14, fontWeight: 700, color: "#111" }}>{currentUser?.name}</p>
-                  <p style={{ fontSize: 12, color: "#aaa", marginTop: 2 }}>{currentUser?.email}</p>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  style={{
-                    width: "100%", display: "flex", alignItems: "center", gap: 10,
-                    padding: "12px 16px", fontSize: 14, color: "#EF4444",
-                    background: "transparent", border: "none", cursor: "pointer",
-                  }}
-                >
-                  <LogOut size={14} /> Log out
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
+      {/* ── Content ── */}
 
       <AnimatePresence mode="wait">
         {person ? (

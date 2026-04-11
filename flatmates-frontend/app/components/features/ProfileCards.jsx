@@ -51,25 +51,27 @@ export function ProfilePromptCard({ prompt = "Together, we could", answer, onLik
       </p>
 
       {/* Heart button — bottom right */}
-      <button
-        onClick={onLike}
-        style={{
-          position: "absolute",
-          bottom: 18,
-          right: 18,
-          width: 42,
-          height: 42,
-          borderRadius: "50%",
-          border: "1.5px solid #E5E5E5",
-          background: "#fff",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "pointer",
-        }}
-      >
-        <Heart size={18} strokeWidth={1.8} color="#ccc" />
-      </button>
+      {onLike && (
+        <button
+          onClick={onLike}
+          style={{
+            position: "absolute",
+            bottom: 18,
+            right: 18,
+            width: 42,
+            height: 42,
+            borderRadius: "50%",
+            border: "1.5px solid #E5E5E5",
+            background: "#fff",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        >
+          <Heart size={18} strokeWidth={1.8} color="#ccc" />
+        </button>
+      )}
     </div>
   );
 }
